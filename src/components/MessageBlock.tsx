@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, type FC } from "react";
+import { useState, useEffect, useRef, type FC } from "react";
 import {
   Box,
   Avatar,
@@ -12,7 +12,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import OpenAIIcon from "./OpenAIIcon";
 
 import { teal } from "@mui/material/colors";
-import parser from "../markdown/parser";
+import parser from "../markdown-parser";
 import { type MessageModel } from "../api/chat";
 
 type MessageBlockProps = {
@@ -61,36 +61,44 @@ const splitHTMLString = (htmlString: string) => {
 
 const MessageBlock: FC<MessageBlockProps> = ({ model, onFinishTyping }) => {
   const [thinking, setThinking] = useState(false);
+  const [parsedHTML, setParsedHTML] = useState("");
   const [displayInnerHTML, setDisplayInnerHTMLText] = useState("");
   const messageBlockRef = useRef<HTMLDivElement>(null);
-  const parsedHTML = useMemo(() => parser(model.content), [model]);
+
   const classes = useStyles();
+
+  useEffect(() => {
+    (async () =>
+      setParsedHTML(
+        model.role === "assistant" ? await parser(model.content) : model.content
+      ))();
+  }, [model.content]);
 
   useEffect(() => {
     if (model.role !== "user") {
       setThinking(true);
-      if (model.type !== "typing") {
+      if (model.type !== "typing" && parsedHTML !== "") {
+        let typingTimer: number | null | undefined = null;
         let i = 0;
         const htmlStringFragments = splitHTMLString(parsedHTML);
-        const typingInterval = setInterval(() => {
-          ((currentIndex) => {
-            if (currentIndex === htmlStringFragments.length - 1) {
-              clearInterval(typingInterval);
-              setThinking(false);
-              setDisplayInnerHTMLText("");
-              onFinishTyping();
-            } else {
-              setDisplayInnerHTMLText(
-                (prevText) => prevText + htmlStringFragments[currentIndex]
-              );
-            }
-          })(i);
-          i++;
-        }, 10);
-        return () => clearInterval(typingInterval);
+        const typeFragment = (currentIndex: number) => {
+          if (currentIndex === htmlStringFragments.length - 1) {
+            clearTimeout(typingTimer!);
+            setThinking(false);
+            setDisplayInnerHTMLText("");
+            onFinishTyping();
+          } else {
+            setDisplayInnerHTMLText(
+              (prevText) => prevText + htmlStringFragments[currentIndex]
+            );
+            typingTimer = setTimeout(() => typeFragment(i++), 10);
+          }
+        };
+        typeFragment(i);
+        return () => clearTimeout(typingTimer!);
       }
     }
-  }, [model]);
+  }, [parsedHTML, model.type]);
 
   useEffect(() => {
     // scroll to the bottom when it's view updated

@@ -19,19 +19,19 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useApiKey } from "../api/key";
 
 const KeyPopper = () => {
-  const [key, setKey] = useApiKey();
+  const [apiKey, setApiKey] = useApiKey();
   const anchorButtonRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
-  const [showKey, setShowKey] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
 
   const handleOpen = useCallback(() => setOpen(true), []);
   const handleClose = useCallback(() => {
-    setShowKey(false);
+    setShowApiKey(false);
     setOpen(false);
   }, []);
   const toggleShowKey = useCallback(
-    () => setShowKey((show) => !show),
-    [showKey]
+    () => setShowApiKey((show) => !show),
+    [showApiKey]
   );
 
   const theme = useTheme();
@@ -79,13 +79,13 @@ const KeyPopper = () => {
         <Paper elevation={3} sx={{ p: 2 }}>
           <ClickAwayListener onClickAway={handleClose}>
             <TextField
-              type={showKey ? "text" : "password"}
+              type={showApiKey ? "text" : "password"}
               label="API Key"
               placeholder="Please input your OpenAI API key"
               autoFocus
               size="small"
               sx={{ width: 320 }}
-              value={key}
+              value={apiKey}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -99,12 +99,12 @@ const KeyPopper = () => {
                         border: "none",
                       }}
                     >
-                      {showKey ? <VisibilityOff /> : <Visibility />}
+                      {showApiKey ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              onChange={(e) => setKey(e.target.value)}
+              onChange={(e) => setApiKey(e.target.value)}
             />
           </ClickAwayListener>
         </Paper>

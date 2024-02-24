@@ -1,6 +1,6 @@
 # ChatGPT demo
 
-[Try the demo online](https://chatgpt-demo.surge.sh/)
+[Try the demo online](https://chatgpt-demo-glitchboyl.vercel.app/)
 
 ## Start
 

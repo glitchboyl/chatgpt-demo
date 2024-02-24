@@ -91,7 +91,7 @@ const MessageBlock: FC<MessageBlockProps> = ({ model, onFinishTyping }) => {
             setDisplayInnerHTMLText(
               (prevText) => prevText + htmlStringFragments[currentIndex]
             );
-            typingTimer = setTimeout(() => typeFragment(i++), 10);
+            typingTimer = setTimeout(() => typeFragment(++i), 10);
           }
         };
         typeFragment(i);

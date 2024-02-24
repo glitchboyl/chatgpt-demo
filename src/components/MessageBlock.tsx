@@ -106,7 +106,7 @@ const MessageBlock: FC<MessageBlockProps> = ({ model, onFinishTyping }) => {
     if (scrollChatBox) {
       scrollChatBox.scrollTop = scrollChatBox.scrollHeight;
     }
-  }, [displayInnerHTML]);
+  }, [thinking, displayInnerHTML]);
 
   return (
     <Box display="flex" sx={{ pt: 2, pb: 4 }} ref={messageBlockRef}>

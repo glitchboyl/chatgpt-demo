@@ -8,7 +8,7 @@ import {
   type PropsWithChildren,
 } from "react";
 
-const STORAGE_KEY_ID = "chatgpt-demo-liluo-api-key";
+const STORAGE_KEY_ID = "chatgpt-demo-api-key";
 
 export const ApiKeyContext = createContext<
   readonly [string, (key: string) => void]
